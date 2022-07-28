@@ -474,6 +474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textMesh: {fileID: 1597711696}
   morse: {fileID: 880808486}
+  textAsset: {fileID: 4900000, guid: 5e84b26d39784264cb15d9d841641162, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

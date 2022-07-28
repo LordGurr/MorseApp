@@ -171,10 +171,13 @@ public class Morse : MonoBehaviour
     private string nuvarandeOrdMorse;
     private bool[] gissadeKorrektBokstav;
 
+    [SerializeField] private TextAsset textAsset;
+
     // Start is called before the first frame update
     private void Start()
     {
-        ord = File.ReadAllLines("Assets/WordList/new-swedish-character-list.txt");
+        ord = textAsset.text.Split('\n');
+
         nuvarandeOrd = ord[Random.Range(0, ord.Length)];
         textMesh.text = nuvarandeOrd;
         morse.text = string.Empty;
