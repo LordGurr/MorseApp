@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
+using TMPro;
 
 public class Morse : MonoBehaviour
 {
@@ -33,9 +35,11 @@ public class Morse : MonoBehaviour
         "X",
         "Y",
         "Z",
+        //Svenska karaktärer
         "Å",
         "Ä",
         "Ö",
+        //Nummer
         "0",
         "1",
         "2",
@@ -46,7 +50,8 @@ public class Morse : MonoBehaviour
         "7",
         "8",
         "9",
-        ".",
+        //Special karaktärer
+        /*".",
         "-",
         "(",
         ")",
@@ -55,7 +60,7 @@ public class Morse : MonoBehaviour
         "%",
         "'",
         ";",
-        ":",
+        ":",*/
     };
 
     private string[] MorseMotsvarighet = new string[]
@@ -102,7 +107,7 @@ public class Morse : MonoBehaviour
         "---..",
         "----.",
         //Special karaktärer
-        ".-.-.-", // .
+        /*".-.-.-", // .
         "-....-", // -
         "-.--.",  // (
         "-..-.-", // )
@@ -111,7 +116,7 @@ public class Morse : MonoBehaviour
         ".--..", // %
         ".----.", // '
         "-.-.-.", // ;
-                "---...", // :
+        "---...", // :*/
     };
 
     private string ConvertToMorse(string input)
@@ -123,6 +128,10 @@ public class Morse : MonoBehaviour
         }
         temp = temp.Replace("/ ", "|");
         temp = temp.Replace(" ", "|");
+        if (temp[temp.Length - 1] == '/')
+        {
+            temp = temp.Remove(temp.Length - 1);
+        }
         return temp;
     }
 
@@ -151,9 +160,90 @@ public class Morse : MonoBehaviour
         return temp;
     }
 
+    private string[] ord;
+    private string nuvarandeOrd;
+
+    [SerializeField] private TextMeshProUGUI textMesh;
+    [SerializeField] private TextMeshProUGUI morse;
+
+    private int currentLetter = 0;
+
+    private string nuvarandeOrdMorse;
+    private bool[] gissadeKorrektBokstav;
+
     // Start is called before the first frame update
     private void Start()
     {
+        ord = File.ReadAllLines("Assets/WordList/new-swedish-character-list.txt");
+        nuvarandeOrd = ord[Random.Range(0, ord.Length)];
+        textMesh.text = nuvarandeOrd;
+        morse.text = string.Empty;
+        nuvarandeOrdMorse = ConvertToMorse(nuvarandeOrd);
+        gissadeKorrektBokstav = new bool[nuvarandeOrd.Length];
+        SetWordColour();
+    }
+
+    public void DotPressed()
+    {
+        morse.text += ".";
+        UpdateWord();
+    }
+
+    private void UpdateWord()
+    {
+        if (ConvertToMorse(nuvarandeOrd[currentLetter].ToString())[morse.text.Length - 1] != morse.text[morse.text.Length - 1])
+        {
+            //nuvarandeOrd = ord[Random.Range(0, ord.Length)];
+            //textMesh.text = nuvarandeOrd;
+            morse.text = string.Empty;
+            gissadeKorrektBokstav[currentLetter] = false;
+            currentLetter++;
+            SetWordColour();
+        }
+        else if (ConvertToMorse(nuvarandeOrd[currentLetter].ToString()) == morse.text)
+        {
+            morse.text = string.Empty;
+            gissadeKorrektBokstav[currentLetter] = true;
+            currentLetter++;
+            SetWordColour();
+        }
+
+        if (currentLetter >= nuvarandeOrd.Length)
+        {
+            nuvarandeOrd = ord[Random.Range(0, ord.Length)];
+            textMesh.text = nuvarandeOrd;
+            morse.text = string.Empty;
+            nuvarandeOrdMorse = ConvertToMorse(nuvarandeOrd);
+            gissadeKorrektBokstav = new bool[nuvarandeOrd.Length];
+            currentLetter = 0;
+            SetWordColour();
+        }
+    }
+
+    private void SetWordColour()
+    {
+        textMesh.text = string.Empty;
+        for (int i = 0; i < nuvarandeOrd.Length; i++)
+        {
+            if (currentLetter <= i)
+            {
+                textMesh.text += "<color=yellow>" + nuvarandeOrd[i] + "</color>";
+            }
+            else if (gissadeKorrektBokstav[i])
+            {
+                textMesh.text += "<color=green>" + nuvarandeOrd[i] + "</color>";
+            }
+            else
+            {
+                textMesh.text += "<color=red>" + nuvarandeOrd[i] + "</color>";
+            }
+        }
+    }
+
+    public void DashPressed()
+    {
+        morse.text += "-";
+        UpdateWord();
     }
 
     // Update is called once per frame
