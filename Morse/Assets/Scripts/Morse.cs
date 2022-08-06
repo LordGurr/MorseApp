@@ -195,10 +195,13 @@ public class Morse : MonoBehaviour
         gissadeKorrektBokstav = new bool[nuvarandeOrd.Length];
         SetWordColour();
 
-        audioSource = gameObject.AddComponent<AudioSource>();
+        //audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = gameObject.GetComponent<AudioSource>();
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0; //force 2D sound
         audioSource.Stop(); //avoids audiosource from starting to play automatically
+
+        //proceduralAudio.enabled = false;
 
         sliderUnit.value = unitLength * 1000;
         inputFieldUnit.text = (unitLength * 1000).ToString();
@@ -302,6 +305,7 @@ public class Morse : MonoBehaviour
         {
             audioSource.Stop();
         }
+        //proceduralAudio.gain = 0;
     }
 
     public void TurnOffBeep()
@@ -310,6 +314,7 @@ public class Morse : MonoBehaviour
         {
             audioSource.Stop();
         }
+        //proceduralAudio.gain = 0;
         keyboard = true;
         timeHeldDown = 0;
         for (int i = 0; i < KeyboardObjects.Length; i++)
@@ -329,6 +334,8 @@ public class Morse : MonoBehaviour
 
     private float unitLength = 0.04f;
 
+    [SerializeField] private ProceduralAudio proceduralAudio;
+
     // Update is called once per frame
     private void Update()
     {
@@ -343,8 +350,8 @@ public class Morse : MonoBehaviour
                 {
                     //timeIndex = 0;  //resets timer before playing sound
                     audioSource.Play();
-                    //proceduralAudio.enabled = true;
                 }
+                //proceduralAudio.gain = 2;
             }
             else if ((Input.touchCount <= 0 && !Input.GetMouseButton(0)) && heldDown)
             {
@@ -352,6 +359,7 @@ public class Morse : MonoBehaviour
                 {
                     audioSource.Stop();
                 }
+                //proceduralAudio.gain = 0;
             }
 
             if (Input.GetMouseButton(0) || Input.touchCount > 0)
