@@ -173,7 +173,11 @@ public class Morse : MonoBehaviour
     private string nuvarandeOrdMorse;
     private bool[] gissadeKorrektBokstav;
 
-    [SerializeField] private TextAsset textAsset;
+    [SerializeField] private TextAsset[] ordListor;
+
+    [SerializeField] private TMP_Dropdown nuvarandeOrdlistaDropdown;
+
+    private int nuvarandeOrdlista = 0;
 
     [SerializeField] private GameObject[] KeyboardObjects;
 
@@ -186,7 +190,7 @@ public class Morse : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        ord = textAsset.text.Split('\n');
+        ord = ordListor[nuvarandeOrdlista].text.Split('\n');
 
         nuvarandeOrd = ord[UnityEngine.Random.Range(0, ord.Length)];
         textMesh.text = nuvarandeOrd;
@@ -210,10 +214,30 @@ public class Morse : MonoBehaviour
         inputFieldFrequecny.text = (frequency).ToString();
     }
 
+    private bool IsDigitsOnly(string str) //Den här kollar så att det bara finns nummer eller mellanslag i passwordet. Om inte för denna så skulle spelet krascha om du skrev en bokstav.
+    {
+        foreach (char c in str)
+        {
+            if (c < '0' || c > '9')
+                if (c != ' ')
+                {
+                    return false;
+                }
+        }
+        return true;
+    }
+
     public void UpdateSoundFrequencyFromInputfield()
     {
-        frequency = float.Parse(inputFieldFrequecny.text);
-        sliderFrequency.value = frequency;
+        if ((inputFieldFrequecny.text.Length > 0))
+        {
+            frequency = float.Parse(inputFieldFrequecny.text);
+            sliderFrequency.value = frequency;
+        }
+        else
+        {
+            inputFieldFrequecny.text = (frequency).ToString();
+        }
     }
 
     public void UpdateSoundFrequencyFromSlider()
@@ -224,14 +248,35 @@ public class Morse : MonoBehaviour
 
     public void UpdateUnitLengthFromInputfield()
     {
-        unitLength = float.Parse(inputFieldUnit.text) / 1000;
-        sliderUnit.value = unitLength * 1000;
+        if ((inputFieldUnit.text.Length > 0))
+        {
+            unitLength = float.Parse(inputFieldUnit.text) / 1000;
+            sliderUnit.value = unitLength * 1000;
+        }
+        else
+        {
+            inputFieldUnit.text = (unitLength * 1000).ToString();
+        }
     }
 
     public void UpdateUnitLengthFromSlider()
     {
         unitLength = sliderUnit.value / 1000;
         inputFieldUnit.text = (unitLength * 1000).ToString();
+    }
+
+    public void UpdateWordListFromDropdown()
+    {
+        nuvarandeOrdlista = nuvarandeOrdlistaDropdown.value;
+
+        ord = ordListor[nuvarandeOrdlista].text.Split('\n');
+
+        nuvarandeOrd = ord[UnityEngine.Random.Range(0, ord.Length)];
+        textMesh.text = nuvarandeOrd;
+        morse.text = string.Empty;
+        nuvarandeOrdMorse = ConvertToMorse(nuvarandeOrd);
+        gissadeKorrektBokstav = new bool[nuvarandeOrd.Length];
+        SetWordColour();
     }
 
     public void DotPressed()
