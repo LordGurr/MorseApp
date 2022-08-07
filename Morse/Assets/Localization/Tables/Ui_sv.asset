@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 6909599744
-    m_Localized: Morse till alfabet
+    m_Localized: Ord till morse
     m_Metadata:
       m_Items: []
   - m_Id: 288905240576
@@ -64,6 +64,30 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 233720688156672
     m_Localized: "Blink enhetsl\xE4ngd"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280495805440000
+    m_Localized: "F\xF6reg\xE5ende"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280576692592640
+    m_Localized: Upprepa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280777788497920
+    m_Localized: "V\xE4xla Spelande"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280885661802496
+    m_Localized: Skicka in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 282334600896512
+    m_Localized: Blink till ord
+    m_Metadata:
+      m_Items: []
+  - m_Id: 282406814228480
+    m_Localized: Blink till bokstav
     m_Metadata:
       m_Items: []
   references:

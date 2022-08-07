@@ -63,6 +63,30 @@ MonoBehaviour:
     m_Key: "Blink enhetsl\xE4ngd"
     m_Metadata:
       m_Items: []
+  - m_Id: 280495805440000
+    m_Key: "F\xF6reg\xE5ende"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280576692592640
+    m_Key: Upprepa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280777788497920
+    m_Key: "V\xE4xla spelande"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280885661802496
+    m_Key: Submit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 282334600896512
+    m_Key: Blink till ord
+    m_Metadata:
+      m_Items: []
+  - m_Id: 282406814228480
+    m_Key: Blink till bokstav
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

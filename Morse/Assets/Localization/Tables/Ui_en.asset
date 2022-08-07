@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 6909599744
-    m_Localized: Morse to alphabet
+    m_Localized: Word to morse
     m_Metadata:
       m_Items: []
   - m_Id: 288905240576
@@ -64,6 +64,30 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 233720688156672
     m_Localized: Flash unit length
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280495805440000
+    m_Localized: Previous
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280576692592640
+    m_Localized: Repeat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280777788497920
+    m_Localized: Toggle Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 280885661802496
+    m_Localized: Submit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 282334600896512
+    m_Localized: Flash to word
+    m_Metadata:
+      m_Items: []
+  - m_Id: 282406814228480
+    m_Localized: Flash to letter
     m_Metadata:
       m_Items: []
   references:

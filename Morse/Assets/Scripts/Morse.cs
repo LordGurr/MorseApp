@@ -173,6 +173,7 @@ public class Morse : MonoBehaviour
     [SerializeField] private TextMeshProUGUI morseOrd;
     [SerializeField] private TextMeshProUGUI morse;
     [SerializeField] private TMP_InputField blinkMorseOrd;
+    [SerializeField] private TextMeshProUGUI blinkMorseResult;
 
     private int currentLetter = 0;
 
@@ -226,6 +227,7 @@ public class Morse : MonoBehaviour
 
         sliderFrequency.value = frequency;
         inputFieldFrequency.text = (frequency).ToString();
+        blinkMorseResult.text = string.Empty;
     }
 
     private bool IsDigitsOnly(string str) //Den här kollar så att det bara finns nummer eller mellanslag i passwordet. Om inte för denna så skulle spelet krascha om du skrev en bokstav.
@@ -387,23 +389,20 @@ public class Morse : MonoBehaviour
 
     private string SetWordColour(string input)
     {
+        input = input.Replace("<color=green>", string.Empty);
+        input = input.Replace("<color=red>", string.Empty);
+        input = input.Replace("</color>", string.Empty);
+
         string temp = string.Empty;
         for (int i = 0; i < input.Length; i++)
         {
-            if (i < nuvarandeOrd.Length)
+            if (i < nuvarandeOrd.Length && input[i] == nuvarandeOrd[i])
             {
-                if (input[i] == nuvarandeOrd[i])
-                {
-                    temp += "<color=green>" + nuvarandeOrd[i] + "</color>";
-                }
-                else
-                {
-                    temp += "<color=red>" + nuvarandeOrd[i] + "</color>";
-                }
+                temp += "<color=green>" + input[i] + "</color>";
             }
             else
             {
-                break;
+                temp += "<color=red>" + input[i] + "</color>";
             }
         }
         return temp;
@@ -411,8 +410,38 @@ public class Morse : MonoBehaviour
 
     public void FlashWordFinished()
     {
-        blinkMorseOrd.text = SetWordColour(blinkMorseOrd.text);
+        blinkMorseResult.text = SetWordColour(blinkMorseOrd.text.ToLower());
+        blinkMorseOrd.text = string.Empty;
+        PauseMorse();
+        VäljNyttOrd();
     }
+
+    public void ValidateInputString(TMP_InputField component)
+    {
+        string temp = string.Empty;
+        temp = component.text;
+        for (int i = 0; i < temp.Length; i++)
+        {
+            if (!Char.IsLetter(temp[i]))
+            {
+                temp = temp.Remove(i, 1);
+            }
+        }
+        component.text = temp;
+    }
+
+    //public void ValidateInputString(TextMeshProUGUI component)
+    //{
+    //    string temp = string.Empty;
+    //    temp = component.text;
+    //    for (int i = 0; i < temp.Length; i++)
+    //    {
+    //        if (!Char.IsLetter(temp[i]))
+    //        {
+    //            temp = temp.Remove(i, 1);
+    //        }
+    //    }
+    //}
 
     private bool keyboard = true;
 
@@ -455,11 +484,15 @@ public class Morse : MonoBehaviour
     public void PlayingMorse()
     {
         playingMorse = !playingMorse;
+        FinishedMorseChar();
         if (!playingMorse)
         {
             morseBlinkare.SetActive(false);
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
         }
-        FinishedMorseChar();
     }
 
     public void PauseMorse()
@@ -467,6 +500,10 @@ public class Morse : MonoBehaviour
         playingMorse = false;
         morseBlinkare.SetActive(false);
         FinishedMorseChar();
+        if (audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
     }
 
     public void RepeatMorse()
@@ -591,16 +628,29 @@ public class Morse : MonoBehaviour
             if (nuvarandeOrdMorseMedPaus[currentMorseChar] == '.' || nuvarandeOrdMorseMedPaus[currentMorseChar] == '-')
             {
                 morseBlinkare.SetActive(true);
+                if (!audioSource.isPlaying)
+                {
+                    //timeIndex = 0;  //resets timer before playing sound
+                    audioSource.Play();
+                }
             }
             else if (nuvarandeOrdMorseMedPaus[currentMorseChar] == '|' || nuvarandeOrdMorseMedPaus[currentMorseChar] == '/' || nuvarandeOrdMorseMedPaus[currentMorseChar] == '*')
             {
                 morseBlinkare.SetActive(false);
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
             }
         }
         else
         {
             playingMorse = false;
             morseBlinkare.SetActive(false);
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
         }
     }
 
