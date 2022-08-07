@@ -124,13 +124,18 @@ public class Morse : MonoBehaviour
     private string ConvertToMorse(string input)
     {
         string temp = input.Replace('.', '_');
+        //temp = temp.Substring(0, temp.Length - 1);
         for (int i = 0; i < Alfabet.Length; i++)
         {
             temp = temp.ToLower().Replace(Alfabet[i].ToLower(), MorseMotsvarighet[i] + "/");
         }
         temp = temp.Replace("/ ", "|");
         temp = temp.Replace(" ", "|");
-        if (temp[temp.Length - 1] == '/')
+        if (temp[^1] == '\r')
+        {
+            temp = temp.Remove(temp.Length - 1);
+        }
+        if (temp[^1] == '/')
         {
             temp = temp.Remove(temp.Length - 1);
         }
@@ -165,8 +170,9 @@ public class Morse : MonoBehaviour
     private string[] ord;
     private string nuvarandeOrd;
 
-    [SerializeField] private TextMeshProUGUI textMesh;
+    [SerializeField] private TextMeshProUGUI morseOrd;
     [SerializeField] private TextMeshProUGUI morse;
+    [SerializeField] private TMP_InputField blinkMorseOrd;
 
     private int currentLetter = 0;
 
@@ -185,19 +191,24 @@ public class Morse : MonoBehaviour
     [SerializeField] private TMP_InputField inputFieldUnit;
 
     [SerializeField] private Slider sliderFrequency;
-    [SerializeField] private TMP_InputField inputFieldFrequecny;
+    [SerializeField] private TMP_InputField inputFieldFrequency;
+
+    [SerializeField] private Slider sliderFlashUnit;
+    [SerializeField] private TMP_InputField inputFieldFlashUnit;
+
+    private char[] pausKaraktärer = new char[3]
+    {
+        '*',
+        '/',
+        '|',
+    };
 
     // Start is called before the first frame update
     private void Start()
     {
         ord = ordListor[nuvarandeOrdlista].text.Split('\n');
 
-        nuvarandeOrd = ord[UnityEngine.Random.Range(0, ord.Length)];
-        textMesh.text = nuvarandeOrd;
-        morse.text = string.Empty;
-        nuvarandeOrdMorse = ConvertToMorse(nuvarandeOrd);
-        gissadeKorrektBokstav = new bool[nuvarandeOrd.Length];
-        SetWordColour();
+        VäljNyttOrd();
 
         //audioSource = gameObject.AddComponent<AudioSource>();
         audioSource = gameObject.GetComponent<AudioSource>();
@@ -210,8 +221,11 @@ public class Morse : MonoBehaviour
         sliderUnit.value = unitLength * 1000;
         inputFieldUnit.text = (unitLength * 1000).ToString();
 
+        sliderFlashUnit.value = flashUnitLength * 1000;
+        inputFieldFlashUnit.text = (flashUnitLength * 1000).ToString();
+
         sliderFrequency.value = frequency;
-        inputFieldFrequecny.text = (frequency).ToString();
+        inputFieldFrequency.text = (frequency).ToString();
     }
 
     private bool IsDigitsOnly(string str) //Den här kollar så att det bara finns nummer eller mellanslag i passwordet. Om inte för denna så skulle spelet krascha om du skrev en bokstav.
@@ -229,21 +243,21 @@ public class Morse : MonoBehaviour
 
     public void UpdateSoundFrequencyFromInputfield()
     {
-        if ((inputFieldFrequecny.text.Length > 0))
+        if ((inputFieldFrequency.text.Length > 0))
         {
-            frequency = float.Parse(inputFieldFrequecny.text);
+            frequency = float.Parse(inputFieldFrequency.text);
             sliderFrequency.value = frequency;
         }
         else
         {
-            inputFieldFrequecny.text = (frequency).ToString();
+            inputFieldFrequency.text = (frequency).ToString();
         }
     }
 
     public void UpdateSoundFrequencyFromSlider()
     {
         frequency = sliderFrequency.value;
-        inputFieldFrequecny.text = (frequency).ToString();
+        inputFieldFrequency.text = (frequency).ToString();
     }
 
     public void UpdateUnitLengthFromInputfield()
@@ -265,18 +279,32 @@ public class Morse : MonoBehaviour
         inputFieldUnit.text = (unitLength * 1000).ToString();
     }
 
+    public void UpdateFlashUnitLengthFromInputfield()
+    {
+        if ((inputFieldFlashUnit.text.Length > 0))
+        {
+            flashUnitLength = float.Parse(inputFieldFlashUnit.text) / 1000;
+            sliderFlashUnit.value = flashUnitLength * 1000;
+        }
+        else
+        {
+            inputFieldFlashUnit.text = (flashUnitLength * 1000).ToString();
+        }
+    }
+
+    public void UpdateFlashUnitLengthFromSlider()
+    {
+        flashUnitLength = sliderFlashUnit.value / 1000;
+        inputFieldFlashUnit.text = (flashUnitLength * 1000).ToString();
+    }
+
     public void UpdateWordListFromDropdown()
     {
         nuvarandeOrdlista = nuvarandeOrdlistaDropdown.value;
 
         ord = ordListor[nuvarandeOrdlista].text.Split('\n');
 
-        nuvarandeOrd = ord[UnityEngine.Random.Range(0, ord.Length)];
-        textMesh.text = nuvarandeOrd;
-        morse.text = string.Empty;
-        nuvarandeOrdMorse = ConvertToMorse(nuvarandeOrd);
-        gissadeKorrektBokstav = new bool[nuvarandeOrd.Length];
-        SetWordColour();
+        VäljNyttOrd();
     }
 
     public void DotPressed()
@@ -304,36 +332,86 @@ public class Morse : MonoBehaviour
             SetWordColour();
         }
 
-        if (currentLetter >= nuvarandeOrd.Length - 1)
+        if (currentLetter >= nuvarandeOrd.Length)
         {
-            nuvarandeOrd = ord[UnityEngine.Random.Range(0, ord.Length)];
-            textMesh.text = nuvarandeOrd;
-            morse.text = string.Empty;
-            nuvarandeOrdMorse = ConvertToMorse(nuvarandeOrd);
-            gissadeKorrektBokstav = new bool[nuvarandeOrd.Length];
-            currentLetter = 0;
-            SetWordColour();
+            VäljNyttOrd();
         }
+    }
+
+    private void VäljNyttOrd()
+    {
+        currentLetter = 0;
+        nuvarandeOrd = ord[UnityEngine.Random.Range(0, ord.Length)];
+        morseOrd.text = nuvarandeOrd;
+        morse.text = string.Empty;
+        nuvarandeOrdMorse = ConvertToMorse(nuvarandeOrd);
+        if (nuvarandeOrd[^1] == '\r')
+        {
+            nuvarandeOrd = nuvarandeOrd.Remove(nuvarandeOrd.Length - 1);
+        }
+        nuvarandeOrdMorseMedPaus = nuvarandeOrdMorse;
+        for (int i = 1; i < nuvarandeOrdMorseMedPaus.Length; i++)
+        {
+            if (pausKaraktärer.Any(o => o == nuvarandeOrdMorseMedPaus[i]) || (i - 1 >= 0 && pausKaraktärer.Any(o => o == nuvarandeOrdMorseMedPaus[i - 1])) /*|| (i + 1 < nuvarandeOrdMorseMedPaus.Length && pausKaraktärer.Any(o => o == nuvarandeOrdMorseMedPaus[i + 1]))*/)
+            {
+                continue;
+            }
+            else
+            {
+                nuvarandeOrdMorseMedPaus = nuvarandeOrdMorseMedPaus.Insert(i, "*");
+            }
+        }
+        gissadeKorrektBokstav = new bool[nuvarandeOrd.Length];
+        SetWordColour();
     }
 
     private void SetWordColour()
     {
-        textMesh.text = string.Empty;
+        morseOrd.text = string.Empty;
         for (int i = 0; i < nuvarandeOrd.Length; i++)
         {
             if (currentLetter <= i)
             {
-                textMesh.text += "<color=yellow>" + nuvarandeOrd[i] + "</color>";
+                morseOrd.text += "<color=yellow>" + nuvarandeOrd[i] + "</color>";
             }
             else if (gissadeKorrektBokstav[i])
             {
-                textMesh.text += "<color=green>" + nuvarandeOrd[i] + "</color>";
+                morseOrd.text += "<color=green>" + nuvarandeOrd[i] + "</color>";
             }
             else
             {
-                textMesh.text += "<color=red>" + nuvarandeOrd[i] + "</color>";
+                morseOrd.text += "<color=red>" + nuvarandeOrd[i] + "</color>";
             }
         }
+    }
+
+    private string SetWordColour(string input)
+    {
+        string temp = string.Empty;
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (i < nuvarandeOrd.Length)
+            {
+                if (input[i] == nuvarandeOrd[i])
+                {
+                    temp += "<color=green>" + nuvarandeOrd[i] + "</color>";
+                }
+                else
+                {
+                    temp += "<color=red>" + nuvarandeOrd[i] + "</color>";
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        return temp;
+    }
+
+    public void FlashWordFinished()
+    {
+        blinkMorseOrd.text = SetWordColour(blinkMorseOrd.text);
     }
 
     private bool keyboard = true;
@@ -374,12 +452,49 @@ public class Morse : MonoBehaviour
         UpdateWord();
     }
 
+    public void PlayingMorse()
+    {
+        playingMorse = !playingMorse;
+        if (!playingMorse)
+        {
+            morseBlinkare.SetActive(false);
+        }
+        FinishedMorseChar();
+    }
+
+    public void PauseMorse()
+    {
+        playingMorse = false;
+        morseBlinkare.SetActive(false);
+        FinishedMorseChar();
+    }
+
+    public void RepeatMorse()
+    {
+        timePlayedChar = 0;
+        currentMorseChar = 0;
+        playingMorse = true;
+        FinishedMorseChar();
+    }
+
     private bool heldDown = false;
     private float timeHeldDown = 0;
 
     private float unitLength = 0.04f;
 
+    private float flashUnitLength = 0.5f;
+
     [SerializeField] private ProceduralAudio proceduralAudio;
+
+    private bool playingMorse;
+
+    private float timePlayedChar = 0;
+
+    private int currentMorseChar;
+
+    [SerializeField] private GameObject morseBlinkare;
+
+    private string nuvarandeOrdMorseMedPaus;
 
     // Update is called once per frame
     private void Update()
@@ -436,6 +551,56 @@ public class Morse : MonoBehaviour
                 timeHeldDown = 0;
                 heldDown = false;
             }
+        }
+        if (playingMorse)
+        {
+            timePlayedChar += Time.deltaTime;
+            if (nuvarandeOrdMorseMedPaus[currentMorseChar] == '.' && timePlayedChar > flashUnitLength)
+            {
+                currentMorseChar++;
+                FinishedMorseChar();
+            }
+            else if (nuvarandeOrdMorseMedPaus[currentMorseChar] == '-' && timePlayedChar > flashUnitLength * 3)
+            {
+                currentMorseChar++;
+                FinishedMorseChar();
+            }
+            else if (nuvarandeOrdMorseMedPaus[currentMorseChar] == '*' && timePlayedChar > flashUnitLength)
+            {
+                currentMorseChar++;
+                FinishedMorseChar();
+            }
+            else if (nuvarandeOrdMorseMedPaus[currentMorseChar] == '/' && timePlayedChar > flashUnitLength * 3)
+            {
+                currentMorseChar++;
+                FinishedMorseChar();
+            }
+            else if (nuvarandeOrdMorseMedPaus[currentMorseChar] == '|' && timePlayedChar > flashUnitLength * 6)
+            {
+                currentMorseChar++;
+                FinishedMorseChar();
+            }
+        }
+    }
+
+    private void FinishedMorseChar()
+    {
+        timePlayedChar = 0;
+        if (currentMorseChar < nuvarandeOrdMorseMedPaus.Length)
+        {
+            if (nuvarandeOrdMorseMedPaus[currentMorseChar] == '.' || nuvarandeOrdMorseMedPaus[currentMorseChar] == '-')
+            {
+                morseBlinkare.SetActive(true);
+            }
+            else if (nuvarandeOrdMorseMedPaus[currentMorseChar] == '|' || nuvarandeOrdMorseMedPaus[currentMorseChar] == '/' || nuvarandeOrdMorseMedPaus[currentMorseChar] == '*')
+            {
+                morseBlinkare.SetActive(false);
+            }
+        }
+        else
+        {
+            playingMorse = false;
+            morseBlinkare.SetActive(false);
         }
     }
 

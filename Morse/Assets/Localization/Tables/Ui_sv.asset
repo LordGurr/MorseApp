@@ -62,6 +62,10 @@ MonoBehaviour:
     m_Localized: "Spr\xE5k"
     m_Metadata:
       m_Items: []
+  - m_Id: 233720688156672
+    m_Localized: "Blink enhetsl\xE4ngd"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

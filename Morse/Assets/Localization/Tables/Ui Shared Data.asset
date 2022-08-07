@@ -59,6 +59,10 @@ MonoBehaviour:
     m_Key: "Spr\xE5k"
     m_Metadata:
       m_Items: []
+  - m_Id: 233720688156672
+    m_Key: "Blink enhetsl\xE4ngd"
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
