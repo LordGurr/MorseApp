@@ -17,6 +17,8 @@ internal enum Skärm
     BlinkTillBokstav,
 }
 
+//Textmesh tag documentation
+//http://digitalnativestudios.com/textmeshpro/docs/rich-text/
 public class Morse : MonoBehaviour
 {
     private string[] Alfabet = new string[]
@@ -438,15 +440,19 @@ public class Morse : MonoBehaviour
         input = input.Replace("</color>", string.Empty);
 
         string temp = string.Empty;
-        for (int i = 0; i < input.Length; i++)
+        for (int i = 0; i < input.Length || i < nuvarandeOrd.Length; i++)
         {
-            if (i < nuvarandeOrd.Length && input[i] == nuvarandeOrd[i])
+            if (i < nuvarandeOrd.Length && i < input.Length && input[i] == nuvarandeOrd[i])
             {
-                temp += "<color=green>" + input[i] + "</color>";
+                temp += "<color=green>" + nuvarandeOrd[i] + "</color>";
             }
-            else
+            else if (i < nuvarandeOrd.Length)
             {
-                temp += "<color=red>" + input[i] + "</color>";
+                temp += "<color=red>" + nuvarandeOrd[i] + "</color>";
+            }
+            else if (i < input.Length)
+            {
+                temp += "<color=#65616D>" + input[i] + "</color>";
             }
         }
         return temp;
@@ -485,7 +491,7 @@ public class Morse : MonoBehaviour
 
     public void FlashLetterFinished()
     {
-        blinkMorseBokstavResult.text = SetLetterColour(nuvarandeBokstav.ToUpper());
+        blinkMorseBokstavResult.text = SetLetterColour(blinkMorseBokstav.text.ToUpper());
         blinkMorseBokstav.text = string.Empty;
         PauseMorse();
         VäljNyBokstav();
@@ -526,6 +532,7 @@ public class Morse : MonoBehaviour
     {
         keyboard = !keyboard;
         timeHeldDown = 0;
+        heldDown = false;
         for (int i = 0; i < KeyboardObjects.Length; i++)
         {
             KeyboardObjects[i].SetActive(keyboard);
@@ -570,7 +577,6 @@ public class Morse : MonoBehaviour
     public void PlayingMorse()
     {
         playingMorse = !playingMorse;
-        FinishedMorseChar(skärm == Skärm.BlinkTillOrd ? nuvarandeOrdMorseMedPaus : nuvarandeBokstavMorse);
         if (!playingMorse)
         {
             SetAllMorseBlinkareActive(false);
@@ -579,13 +585,17 @@ public class Morse : MonoBehaviour
                 audioSource.Stop();
             }
         }
+        else
+        {
+            FinishedMorseChar(skärm == Skärm.BlinkTillOrd ? nuvarandeOrdMorseMedPaus : nuvarandeBokstavMorse);
+        }
     }
 
     public void PauseMorse()
     {
         playingMorse = false;
+        //FinishedMorseChar(skärm == Skärm.BlinkTillOrd ? nuvarandeOrdMorseMedPaus : nuvarandeBokstavMorse);
         SetAllMorseBlinkareActive(false);
-        FinishedMorseChar(skärm == Skärm.BlinkTillOrd ? nuvarandeOrdMorseMedPaus : nuvarandeBokstavMorse);
         if (audioSource.isPlaying)
         {
             audioSource.Stop();
