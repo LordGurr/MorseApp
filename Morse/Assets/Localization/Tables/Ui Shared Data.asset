@@ -87,6 +87,10 @@ MonoBehaviour:
     m_Key: Blink till bokstav
     m_Metadata:
       m_Items: []
+  - m_Id: 704881230356480
+    m_Key: Korta ord
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

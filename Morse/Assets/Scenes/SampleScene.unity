@@ -547,7 +547,7 @@ GameObject:
   - component: {fileID: 83668947}
   - component: {fileID: 83668946}
   m_Layer: 5
-  m_Name: Morse till alfabet (2)
+  m_Name: Blink till bokstav
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3038,8 +3038,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 364890061}
-  - {fileID: 725817223}
   - {fileID: 981651483}
+  - {fileID: 725817223}
   - {fileID: 1869641437}
   - {fileID: 395955783}
   m_Father: {fileID: 519420032}
@@ -3134,6 +3134,7 @@ MonoBehaviour:
   - {fileID: 4900000, guid: 5e84b26d39784264cb15d9d841641162, type: 3}
   - {fileID: 4900000, guid: 8d3a41f6aa4efff4d80cf081e66ff14f, type: 3}
   - {fileID: 4900000, guid: 007afe82332e88246a4d003d165b837e, type: 3}
+  - {fileID: 4900000, guid: e2e244f1c2f20d34687086b60bf6d44c, type: 3}
   nuvarandeOrdlistaDropdown: {fileID: 1053721992}
   "spr\xE5k": {fileID: 1865909555}
   KeyboardObjects:
@@ -8272,6 +8273,8 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Engelska
       m_Image: {fileID: 0}
+    - m_Text: Korta ord
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -8359,6 +8362,14 @@ MonoBehaviour:
       m_TableCollectionName: GUID:13d8b36f409e6fa46ae786a58841d5b1
     m_TableEntryReference:
       m_KeyId: 22752196567040
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  - m_TableReference:
+      m_TableCollectionName: GUID:13d8b36f409e6fa46ae786a58841d5b1
+    m_TableEntryReference:
+      m_KeyId: 704881230356480
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
@@ -8535,7 +8546,7 @@ GameObject:
   - component: {fileID: 1105316119}
   - component: {fileID: 1105316118}
   m_Layer: 5
-  m_Name: Morse till alfabet (1)
+  m_Name: Blink till ord
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8614,6 +8625,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 725817222}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 455497135}
+        m_TargetAssemblyTypeName: Morse, Assembly-CSharp
+        m_MethodName: "SetSk\xE4rm"
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
